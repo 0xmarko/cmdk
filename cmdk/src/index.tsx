@@ -128,6 +128,17 @@ type CommandProps = Children &
     fetchInProgress?: boolean
   }
 
+/**
+ * Imperative API for the Command component.
+ * Access these methods by creating a ref: `const commandRef = useRef<CommandRef>(null)`
+ */
+type CommandRef = {
+  /**
+   * Programmatically select the first valid (non-disabled) item.
+   */
+  selectFirstItem: () => void
+}
+
 type Context = {
   value: (id: string, value: string, keywords?: string[]) => void
   item: (id: string, groupId: string) => () => void
@@ -174,7 +185,7 @@ const StoreContext = React.createContext<Store>(undefined)
 const useStore = () => React.useContext(StoreContext)
 const GroupContext = React.createContext<Group>(undefined)
 
-const Command = React.forwardRef<HTMLDivElement, CommandProps>((props, forwardedRef) => {
+const Command = React.forwardRef<CommandRef, CommandProps>((props, forwardedRef) => {
   const state = useLazyRef<State>(() => ({
     /** Value of the search query. */
     search: '',
@@ -216,8 +227,14 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>((props, forwarded
   const inputId = useId()
 
   const listInnerRef = React.useRef<HTMLDivElement>(null)
+  const commandRef = React.useRef<HTMLDivElement>(null)
 
   const schedule = useScheduleLayoutEffect()
+
+  // Expose imperative API via ref
+  React.useImperativeHandle(forwardedRef, () => ({
+    selectFirstItem,
+  }), [])
 
   /** Controlled mode `value` handling. */
   useLayoutEffect(() => {
@@ -590,7 +607,7 @@ const Command = React.forwardRef<HTMLDivElement, CommandProps>((props, forwarded
 
   return (
     <Primitive.div
-      ref={forwardedRef}
+      ref={commandRef}
       tabIndex={-1}
       {...etc}
       cmdk-root=""
@@ -897,7 +914,7 @@ const List = React.forwardRef<HTMLDivElement, ListProps>((props, forwardedRef) =
 /**
  * Renders the command menu in a Radix Dialog.
  */
-const Dialog = React.forwardRef<HTMLDivElement, DialogProps>((props, forwardedRef) => {
+const Dialog = React.forwardRef<CommandRef, DialogProps>((props, forwardedRef) => {
   const { open, onOpenChange, overlayClassName, contentClassName, container, ...etc } = props
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
@@ -959,6 +976,7 @@ const pkg = Object.assign(Command, {
 export { useCmdk as useCommandState }
 export { pkg as Command }
 export { defaultFilter }
+export type { CommandRef }
 
 export { Command as CommandRoot }
 export { List as CommandList }
