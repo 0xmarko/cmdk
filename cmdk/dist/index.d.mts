@@ -5,6 +5,16 @@ declare type Children = {
     children?: React.ReactNode;
 };
 declare type CommandFilter = (value: string, search: string, keywords?: string[]) => number;
+/**
+ * Imperative API for the Command component.
+ * Access these methods by creating a ref: `const commandRef = useRef<CommandRef>(null)`
+ */
+declare type CommandRef = {
+    /**
+     * Programmatically select the first valid (non-disabled) item.
+     */
+    selectFirstItem: () => void;
+};
 declare type State = {
     search: string;
     value: string;
@@ -68,7 +78,7 @@ declare const Command: React.ForwardRefExoticComponent<Children & Pick<Pick<Reac
      * Set to `true` to indicate that the command menu is currently fetching options.
      */
     fetchInProgress?: boolean;
-} & React.RefAttributes<HTMLDivElement>>;
+} & React.RefAttributes<CommandRef>>;
 /**
  * Command menu item. Becomes active on pointer enter or through keyboard navigation.
  * Preferably pass a `value`, otherwise the value will be inferred from `children` or
@@ -219,7 +229,7 @@ declare const Dialog: React.ForwardRefExoticComponent<RadixDialog.DialogProps & 
     contentClassName?: string;
     /** Provide a custom element the Dialog should portal into. */
     container?: HTMLElement;
-} & React.RefAttributes<HTMLDivElement>>;
+} & React.RefAttributes<CommandRef>>;
 /**
  * Automatically renders when there are no results for the search query.
  */
@@ -295,7 +305,7 @@ declare const pkg: React.ForwardRefExoticComponent<Children & Pick<Pick<React.De
      * Set to `true` to indicate that the command menu is currently fetching options.
      */
     fetchInProgress?: boolean;
-} & React.RefAttributes<HTMLDivElement>> & {
+} & React.RefAttributes<CommandRef>> & {
     List: React.ForwardRefExoticComponent<Children & Pick<Pick<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "key" | keyof React.HTMLAttributes<HTMLDivElement>> & {
         ref?: React.Ref<HTMLDivElement>;
     } & {
@@ -418,7 +428,7 @@ declare const pkg: React.ForwardRefExoticComponent<Children & Pick<Pick<React.De
         contentClassName?: string;
         /** Provide a custom element the Dialog should portal into. */
         container?: HTMLElement;
-    } & React.RefAttributes<HTMLDivElement>>;
+    } & React.RefAttributes<CommandRef>>;
     Empty: React.ForwardRefExoticComponent<Children & Pick<Pick<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "key" | keyof React.HTMLAttributes<HTMLDivElement>> & {
         ref?: React.Ref<HTMLDivElement>;
     } & {
@@ -441,4 +451,4 @@ declare const pkg: React.ForwardRefExoticComponent<Children & Pick<Pick<React.De
 /** Run a selector against the store state. */
 declare function useCmdk<T = any>(selector: (state: State) => T): T;
 
-export { pkg as Command, Dialog as CommandDialog, Empty as CommandEmpty, Group as CommandGroup, Input as CommandInput, Item as CommandItem, List as CommandList, Loading as CommandLoading, Command as CommandRoot, Separator as CommandSeparator, defaultFilter, useCmdk as useCommandState };
+export { pkg as Command, Dialog as CommandDialog, Empty as CommandEmpty, Group as CommandGroup, Input as CommandInput, Item as CommandItem, List as CommandList, Loading as CommandLoading, type CommandRef, Command as CommandRoot, Separator as CommandSeparator, defaultFilter, useCmdk as useCommandState };
